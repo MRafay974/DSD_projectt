@@ -9,9 +9,9 @@ module matrix_mult_10
     );   
 
 //temperory registers. 
-reg signed [2:0] matA [2:0][2:0];
-reg signed [2:0] matB [2:0][2:0];
-reg signed [5:0] matC [2:0][2:0];
+reg unsigned [2:0] matA [2:0][2:0];
+reg unsigned [2:0] matB [2:0][2:0];
+reg unsigned [5:0] matC [2:0][2:0];
 integer i,j,k;  //loop indices
 reg first_cycle;    //indicates its the first clock cycle after Enable went High.
 reg end_of_mult;    //indicates multiplication has ended.
