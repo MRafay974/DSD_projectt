@@ -1,0 +1,63 @@
+//Testbench for testing the 3 by 3 matrix multiplier.
+module tb_matrix_mult_10;  //testbench module is always empty. No input or output ports.
+
+reg [26:0] A;
+reg [26:0] B;
+wire [53:0] C;
+reg Clock,reset, Enable;
+wire done;
+reg [5:0] matC [2:0][2:0];
+integer i,j;
+parameter Clock_period = 10;    //Change clock period here. 
+
+
+initial
+begin
+    Clock = 1;
+    reset = 1;
+    #100;   
+    reset = 0;
+	     #Clock_period;
+
+    //input matrices are set and Enable input is set High
+    A = {3'd3,3'd2,3'd1,3'd3,3'd2,3'd1,3'd3,3'd2,3'd1};
+    B = {3'd3,3'd2,3'd1,3'd3,3'd2,3'd1,3'd3,3'd2,3'd1};
+    Enable = 1;
+    wait(done); //wait until 'done' output goes High.
+	 
+	     #(Clock_period/2);  //wait for half a clock cycle.
+
+    //convert the 1-D matrix into 2-D format to easily verify the results.
+    for(i=0;i<=2;i=i+1) begin
+        for(j=0;j<=2;j=j+1) begin
+            matC[i][j] = C[(i * 18 + j * 6) +: 6];
+				 if(i==2 && j ==2) begin
+				        matC[i][j]=matC[i][j];
+				  end
+        end
+    end
+	     #Clock_period;  //wait for one clock cycle.
+
+    Enable = 0; //reset Enable.
+	     #Clock_period;  //wait for one clock cycle.
+		  
+		  #5000;
+
+    $stop;  //Stop the simulation, as we have finished testing the design.
+end
+
+// Clock generation
+   always #(Clock_period/2) Clock <= ~Clock;
+
+
+//Instantiate the matrix multiplier
+matrix_mult_10 matrix_multiplier 
+        (.Clock(Clock), 
+        .reset(reset), 
+        .Enable(Enable), 
+        .A(A),
+        .B(B), 
+        .C(C),
+        .done(done));
+
+endmodule
